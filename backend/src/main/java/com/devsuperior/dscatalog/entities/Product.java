@@ -11,14 +11,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "tb_category")
-public class Category implements Serializable {
+@Table(name = "tb_product")
+public class Product implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -26,16 +26,24 @@ public class Category implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String name;
+	
+	@Column(columnDefinition = "TEXT")
+	private String description;
+	private Double price;
+	private String imgUrl;
 
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
-	private Instant createdAt;
+	private Instant date;
 
-	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
-	private Instant updatedAt;
+	@ManyToMany
+	@JoinTable(name = "tb_product_category", 
+		joinColumns = @JoinColumn(name = "product_id"),
+		inverseJoinColumns = @JoinColumn(name = "category_id"))
+	private Set<Category> categories = new HashSet<>();
 
-	public Category() {
-
+	public Product() {
 	}
+
 
 	public Long getId() {
 		return id;
@@ -53,22 +61,40 @@ public class Category implements Serializable {
 		this.name = name;
 	}
 
-	public Instant getCreatedAt() {
-		return createdAt;
+	public String getDescription() {
+		return description;
 	}
 
-	public Instant getUpdatedAt() {
-		return updatedAt;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
-	@PrePersist
-	public void prePersist() {
-		createdAt = Instant.now();
+	public Double getPrice() {
+		return price;
 	}
 
-	@PreUpdate
-	public void preUpdate() {
-		updatedAt = Instant.now();
+	public void setPrice(Double price) {
+		this.price = price;
+	}
+
+	public String getImgUrl() {
+		return imgUrl;
+	}
+
+	public void setImgUrl(String imgUrl) {
+		this.imgUrl = imgUrl;
+	}
+
+	public Instant getDate() {
+		return date;
+	}
+
+	public void setDate(Instant date) {
+		this.date = date;
+	}
+
+	public Set<Category> getCategories() {
+		return categories;
 	}
 
 	@Override
@@ -84,7 +110,8 @@ public class Category implements Serializable {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Category other = (Category) obj;
+		Product other = (Product) obj;
 		return Objects.equals(id, other.id);
 	}
+
 }
