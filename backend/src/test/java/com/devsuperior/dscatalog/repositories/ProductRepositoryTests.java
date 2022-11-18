@@ -88,4 +88,18 @@ public class ProductRepositoryTests {
 		
 		assertTrue(result.isEmpty());
 	}
+	
+	@Test
+	public void deleteShouldDeleteObjectWhenExists() {
+		repository.deleteById(existingId);
+		Optional<Product> obj = repository.findById(1L);
+		assertFalse(obj.isPresent());
+	}
+
+	@Test
+	public void deleteShouldThrowEmptyResultDataAccessExceptionWhenIdDoesNotExist() {
+		assertThrows(EmptyResultDataAccessException.class, () -> {
+			repository.deleteById(nonExistingId);
+		});
+	}
 }
