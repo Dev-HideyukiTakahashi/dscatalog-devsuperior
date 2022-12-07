@@ -52,6 +52,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 			.checkTokenAccess("isAuthenticated");
 	}
 
+	// Configurando as credenciais da aplicação e outros detalhes
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 		clients.inMemory()
@@ -65,13 +66,14 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 	@Override
 	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
 		
+		// Classe para mostrar atributos extras na autenticação
 		TokenEnhancerChain chain = new TokenEnhancerChain();
 		chain.setTokenEnhancers(Arrays.asList(enchancer, accessTokenConverter));
 		
 		endpoints.authenticationManager(authenticationManager)
 			.tokenStore(jwtTokenStore)
 			.accessTokenConverter(accessTokenConverter)
-			.tokenEnhancer(chain);
+			.tokenEnhancer(chain); // atributos extras
 	}
 	
 	

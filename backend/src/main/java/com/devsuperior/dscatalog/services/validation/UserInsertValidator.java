@@ -13,6 +13,11 @@ import com.devsuperior.dscatalog.entities.User;
 import com.devsuperior.dscatalog.repositories.UserRepository;
 import com.devsuperior.dscatalog.resources.exceptions.FieldMessage;
 
+/*
+ * Classe que implementa a anotação UserInsertValid
+ * Checa se a condicional é verdadeira e adiciona a lista
+ * caso tenha qualquer erro na lista, joga uma erro na requisição
+ */
 public class UserInsertValidator implements ConstraintValidator<UserInsertValid, UserInsertDTO> {
 	
 	@Autowired
@@ -26,6 +31,8 @@ public class UserInsertValidator implements ConstraintValidator<UserInsertValid,
 	public boolean isValid(UserInsertDTO dto, ConstraintValidatorContext context) {
 		
 		List<FieldMessage> list = new ArrayList<>();
+		
+		// Coloque aqui seus testes de validação, acrescentando objetos FieldMessage à lista
 		
 		User user = repository.findByEmail(dto.getEmail());
 		if(user != null) {

@@ -13,11 +13,15 @@ public class AppConfig {
 	@Value("${jwt.secret}")
 	private String jwtSecret;
 
+	// Bean para criptografar a senha
+	// Exemplo de utilização
+	// user.setPassword(passwordEncoder.encode(dto.getPassword()));
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
 	
+	// Registrando a assinatura (segredo do token)
 	@Bean
 	public JwtAccessTokenConverter accessTokenConverter() {
 		JwtAccessTokenConverter tokenConverter = new JwtAccessTokenConverter();
