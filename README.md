@@ -79,13 +79,87 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 ### Referências sobre Bean Validation
 
 https://beanvalidation.org/
+
 https://docs.jboss.org/hibernate/beanvalidation/spec/2.0/api/overview-summary.html
+
 https://docs.jboss.org/hibernate/beanvalidation/spec/2.0/api/javax/validation/constraints/package-summary.html
+
 https://www.baeldung.com/java-bean-validation-not-null-empty-blank
+
 https://www.baeldung.com/spring-custom-validation-message-source
+
 https://pt.stackoverflow.com/questions/133691/formatar-campo-cpf-ou-cnpj-usando-regex
+
 https://regexlib.com/
+
 https://regexr.com/
+
+---
+
+### ConstraintValidator customizado
+
+
+##### Annotation
+```
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import javax.validation.Constraint;
+import javax.validation.Payload;
+
+@Constraint(validatedBy = UserInsertValidator.class)  // aqui a classe validator que implementa a annotation
+@Target({ ElementType.TYPE })
+@Retention(RetentionPolicy.RUNTIME)
+
+public @interface UserInsertValid {
+	String message() default "Validation error"; // msg de erro customizada
+
+	Class<?>[] groups() default {};
+
+	Class<? extends Payload>[] payload() default {};
+}
+
+```
+##### Validator
+
+```
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintValidatorContext;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.devsuperior.dscatalog.dto.UserInsertDTO;
+import com.devsuperior.dscatalog.entities.User;
+import com.devsuperior.dscatalog.repositories.UserRepository;
+import com.devsuperior.dscatalog.resources.exceptions.FieldMessage;
+
+public class UserInsertValidator implements ConstraintValidator<UserInsertValid, UserInsertDTO> // param(annotation/class que vai usar a annotation){
+	
+	@Override
+	public void initialize(UserInsertValid ann) {
+	}
+
+	@Override
+	public boolean isValid(UserInsertDTO dto, ConstraintValidatorContext context) {
+		
+		List<FieldMessage> list = new ArrayList<>();
+		
+		// Coloque aqui seus testes de validação, acrescentando objetos FieldMessage à lista
+		
+		for (FieldMessage e : list) {
+			context.disableDefaultConstraintViolation();
+			context.buildConstraintViolationWithTemplate(e.getMessage()).addPropertyNode(e.getFieldName())
+					.addConstraintViolation();
+		}
+		return list.isEmpty();
+	}
+}
+```
 
 ---
 ### Spring Security
