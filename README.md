@@ -50,7 +50,7 @@ spring.jpa.properties.hibernate.format_sql=false
 ---
 ## Anotações Security / OAuth - cap 03
 ### Classe de configuração
-```
+```java
 @Configuration
 public class AppConfig {
 
@@ -64,7 +64,7 @@ public class AppConfig {
 }
 ```
 ### Configuração provisória para liberar todos endpoints
-```
+```java
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -100,7 +100,7 @@ https://regexr.com/
 
 
 ##### Annotation
-```
+```java
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -124,7 +124,7 @@ public @interface UserInsertValid {
 ```
 ##### Validator
 
-```
+```java
 import java.util.ArrayList;
 import java.util.List;
 
@@ -167,7 +167,7 @@ public class UserInsertValidator implements ConstraintValidator<UserInsertValid,
 ##### Interfaces que devem ser implementadas
 * UserDetails
 	
-```
+```java
 @Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return roles.stream()
@@ -179,7 +179,7 @@ public class UserInsertValidator implements ConstraintValidator<UserInsertValid,
 * UserDetailsService:
 
     
-```
+```java
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User user = repository.findByEmail(username);
@@ -201,6 +201,24 @@ public class UserInsertValidator implements ConstraintValidator<UserInsertValid,
 * Bean para efetuar autenticação
 	* AuthenticationManager
 ---
+
+### Beans para token JWT
+
+```java
+@Bean
+public JwtAccessTokenConverter accessTokenConverter() {
+	JwtAccessTokenConverter tokenConverter = new JwtAccessTokenConverter();
+	tokenConverter.setSigningKey("MY-JWT-SECRET");
+	return tokenConverter;
+}
+
+@Bean
+public JwtTokenStore tokenStore() {
+	return new JwtTokenStore(accessTokenConverter());
+}
+```
+
+---
 ### Spring Cloud OAuth2
 * Classe de configuração para Authorization Server
 	* AuthorizationServerConfigurerAdapter
@@ -209,7 +227,7 @@ public class UserInsertValidator implements ConstraintValidator<UserInsertValid,
 	* ResourceServerConfigurerAdapter
 		* Liberando o h2-console
 
-```
+```java
 private static final String[] PUBLIC = {"/oauth/token", "/h2-console/**" };
 	@Autowired
 	private Environment env;
@@ -232,7 +250,7 @@ private static final String[] PUBLIC = {"/oauth/token", "/h2-console/**" };
 
 ---
 ### Logger
-```
+```java
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 private static Logger logger = LoggerFactory.getLogger(Exemplo.class);
